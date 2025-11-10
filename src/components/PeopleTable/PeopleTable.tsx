@@ -8,6 +8,10 @@ interface Props {
 }
 
 export const PeopleTable: React.FC<Props> = ({ people, selectedSlug }) => {
+  const getPersonByName = (name: string): Person | undefined => {
+    return people.find(p => p.name === name);
+  };
+
   return (
     <div className="box table-container">
       <table
@@ -24,40 +28,52 @@ export const PeopleTable: React.FC<Props> = ({ people, selectedSlug }) => {
             <th>Father</th>
           </tr>
         </thead>
-
         <tbody>
-          {people.map(person => (
-            <tr
-              key={person.slug}
-              data-cy="person"
-              className={
-                person.slug === selectedSlug ? 'has-background-warning' : ''
-              }
-            >
-              <td>
-                <PersonLink personName={person.name} people={people} />
-              </td>
+          {people.map(person => {
+            const mother = person.motherName
+              ? getPersonByName(person.motherName)
+              : undefined;
+            const father = person.fatherName
+              ? getPersonByName(person.fatherName)
+              : undefined;
 
-              <td>{person.sex}</td>
-              <td>{person.born}</td>
-              <td>{person.died}</td>
-
-              <td>
-                {person.motherName ? (
-                  <PersonLink personName={person.motherName} people={people} />
-                ) : (
-                  '-'
-                )}
-              </td>
-              <td>
-                {person.fatherName ? (
-                  <PersonLink personName={person.fatherName} people={people} />
-                ) : (
-                  '-'
-                )}
-              </td>
-            </tr>
-          ))}
+            return (
+              <tr
+                key={person.slug}
+                data-cy="person"
+                className={
+                  person.slug === selectedSlug ? 'has-background-warning' : ''
+                }
+              >
+                <td>
+                  <PersonLink person={person} personName={person.name} />
+                </td>
+                <td>{person.sex}</td>
+                <td>{person.born}</td>
+                <td>{person.died}</td>
+                <td>
+                  {person.motherName ? (
+                    <PersonLink
+                      person={mother}
+                      personName={person.motherName}
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </td>
+                <td>
+                  {person.fatherName ? (
+                    <PersonLink
+                      person={father}
+                      personName={person.fatherName}
+                    />
+                  ) : (
+                    '-'
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

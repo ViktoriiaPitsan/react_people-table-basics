@@ -4,12 +4,10 @@ import { Person } from '../../types';
 
 interface Props {
   personName: string;
-  people: Person[];
+  person: Person | undefined;
 }
 
-export const PersonLink: React.FC<Props> = ({ personName, people }) => {
-  const person = people.find(p => p.name === personName);
-
+export const PersonLink: React.FC<Props> = ({ personName, person }) => {
   if (!person) {
     return <>{personName}</>;
   }
